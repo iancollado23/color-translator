@@ -29,3 +29,4 @@ The Universal Color Translator is a simple tool that converts color names into t
    ```bash
    git clone <your-repo-link>
    cd color-translator
+"# color-translator" 
