@@ -1,42 +1,62 @@
-# test_color_translator.py
+# tests/test_color_translator.py
 
 import unittest
-from color_translator import translate_color_to_hex
+from src.color_translator import translate_color_to_hex, load_color_map
 
 class TestColorTranslator(unittest.TestCase):
-    
+
+    @classmethod
+    def setUpClass(cls):
+        cls.color_map = load_color_map('data/colors.json')
+
     def test_known_colors(self):
-        self.assertEqual(translate_color_to_hex("red"), "#FF0000")
-        self.assertEqual(translate_color_to_hex("blue"), "#0000FF")
-        self.assertEqual(translate_color_to_hex("green"), "#008000")
-        self.assertEqual(translate_color_to_hex("yellow"), "#FFFF00")
-        self.assertEqual(translate_color_to_hex("black"), "#000000")
-        self.assertEqual(translate_color_to_hex("white"), "#FFFFFF")
-        self.assertEqual(translate_color_to_hex("orange"), "#FFA500")
-        self.assertEqual(translate_color_to_hex("purple"), "#800080")
-        self.assertEqual(translate_color_to_hex("pink"), "#FFC0CB")
-        self.assertEqual(translate_color_to_hex("cyan"), "#00FFFF")
-        self.assertEqual(translate_color_to_hex("magenta"), "#FF00FF")
-        self.assertEqual(translate_color_to_hex("lime"), "#00FF00")
-        self.assertEqual(translate_color_to_hex("maroon"), "#800000")
-        self.assertEqual(translate_color_to_hex("navy"), "#000080")
-        self.assertEqual(translate_color_to_hex("olive"), "#808000")
-        self.assertEqual(translate_color_to_hex("teal"), "#008080")
-        self.assertEqual(translate_color_to_hex("silver"), "#C0C0C0")
-        self.assertEqual(translate_color_to_hex("gray"), "#808080")
-        self.assertEqual(translate_color_to_hex("brown"), "#A52A2A")
-        self.assertEqual(translate_color_to_hex("coral"), "#FF7F50")
-    
+        test_cases = {
+            "red": "#FF0000",
+            "blue": "#0000FF",
+            "green": "#008000",
+            "yellow": "#FFFF00",
+            "black": "#000000",
+            "white": "#FFFFFF",
+            "orange": "#FFA500",
+            "purple": "#800080",
+            "pink": "#FFC0CB",
+            "cyan": "#00FFFF",
+            "magenta": "#FF00FF",
+            "lime": "#00FF00",
+            "maroon": "#800000",
+            "navy": "#000080",
+            "olive": "#808000",
+            "teal": "#008080",
+            "silver": "#C0C0C0",
+            "gray": "#808080",
+            "brown": "#A52A2A",
+            "coral": "#FF7F50"
+        }
+        for color, hex_code in test_cases.items():
+            with self.subTest(color=color):
+                self.assertEqual(translate_color_to_hex(color, self.color_map), hex_code)
+
     def test_case_insensitivity(self):
-        self.assertEqual(translate_color_to_hex("Red"), "#FF0000")
-        self.assertEqual(translate_color_to_hex("BLUE"), "#0000FF")
-        self.assertEqual(translate_color_to_hex("Green"), "#008000")
-        self.assertEqual(translate_color_to_hex("YELLOW"), "#FFFF00")
-    
+        test_cases = {
+            "Red": "#FF0000",
+            "BLUE": "#0000FF",
+            "Green": "#008000",
+            "YeLLoW": "#FFFF00",
+            "Black": "#000000",
+            "WHITE": "#FFFFFF"
+        }
+        for color, hex_code in test_cases.items():
+            with self.subTest(color=color):
+                self.assertEqual(translate_color_to_hex(color, self.color_map), hex_code)
+
     def test_unknown_color(self):
-        self.assertEqual(translate_color_to_hex("unknowncolor"), "Color not found")
-        self.assertEqual(translate_color_to_hex(""), "Color not found")
-        self.assertEqual(translate_color_to_hex("123"), "Color not found")
+        test_cases = ["unknowncolor", "bluish", "123", "!@#$", "magentaa"]
+        for color in test_cases:
+            with self.subTest(color=color):
+                self.assertEqual(translate_color_to_hex(color, self.color_map), "Color not found")
+
+    def test_empty_input(self):
+        self.assertEqual(translate_color_to_hex("", self.color_map), "Input cannot be empty.")
 
 if __name__ == "__main__":
     unittest.main()
